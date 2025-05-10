@@ -1,35 +1,79 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css"; // Import the CSS file
 
-function App() {
-  const [count, setCount] = useState(0)
+const ROWS = 6;
+const COLS = 7;
+
+export default function App() {
+  const [board, setBoard] = useState(
+    Array(ROWS)
+      .fill(null)
+      .map(() => Array(COLS).fill(0))
+  );
+
+  const [currentPlayer, setCurrentPlayer] = useState(1);
+  const [gameOver, setGameOver] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleClick = async (col) => {
+    if (gameOver) return;
+    try {
+      const response = await fetch("http://127.0.0.1:8000/move", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          board,
+          player: currentPlayer,
+          column: col,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log("Response from backend:", data);
+
+      const { new_board, winner, draw } = data;
+      setBoard(new_board);
+
+      if (winner !== 0) {
+        setMessage(`Player ${winner} wins!`);
+        setGameOver(true);
+      } else if (draw) {
+        setMessage("It's a draw!");
+        setGameOver(true);
+      } else {
+        setCurrentPlayer((prev) => (prev === 1 ? 2 : 1));
+      }
+    } catch (err) {
+      console.error("Error during move:", err);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app-container">
+      <h1 className="title">Connect Four</h1>
+      <div className="board">
+        {board.map((row, rowIndex) =>
+          row.map((cell, colIndex) => (
+            <div
+              key={`${rowIndex}-${colIndex}`}
+              onClick={() => handleClick(colIndex)}
+              className="cell"
+            >
+              <div
+                className={`disk ${
+                  cell === 1 ? "disk-red" : cell === 2 ? "disk-yellow" : ""
+                }`}
+              ></div>
+            </div>
+          ))
+        )}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      {message && <p className="message">{message}</p>}
+    </div>
+  );
 }
-
-export default App
