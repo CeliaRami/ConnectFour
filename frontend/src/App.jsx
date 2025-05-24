@@ -18,7 +18,7 @@ export default function App() {
   const handleClick = async (col) => {
     if (gameOver) return;
     try {
-      const response = await fetch("http://127.0.0.1:8000/move", {
+      const response = await fetch("https://connectfour-fiis.onrender.com/move", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
