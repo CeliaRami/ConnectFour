@@ -18,7 +18,7 @@ def move():
 
     game = ConnectFour()
     game.board = board_data
-    game.current_player = current_player
+    game.current_player = 1
 
     if game.board[0][column] != 0:
         return jsonify({'error': 'Invalid move'}), 400
