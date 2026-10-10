@@ -39,16 +39,6 @@ Réalisé dans le cadre du module **Intelligence Artificielle**, ce projet perme
 - **Interface graphique :** à compléter.
 - **Intelligence artificielle :** algorithme utilisé à préciser, si applicable.
 
-## 🚀 Installation
-
-Clonez le dépôt GitHub :
-
-```bash
-git clone URL_DE_VOTRE_DEPOT
-```
-
-Ouvrez ensuite le projet dans votre environnement de développement et suivez les instructions nécessaires à son exécution.
-
 ## 🎓 Contexte académique
 
 Projet universitaire réalisé dans le cadre du module **Intelligence Artificielle**, autour de la programmation et de la résolution de problèmes dans un environnement de jeu.
